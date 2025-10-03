@@ -1,0 +1,28 @@
+version: "3.9"
+
+services:
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+  
+  flask:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${FLASK_PORT}:${FLASK_PORT}"
+    env_file:
+      - .env
+    depends_on:
+      - rabbitmq
+
+  celery:
+    build:
+      context: .
+      dockerfile: Dockerfile.celery
+    env_file:
+      - .env
+    depends_on:
+      - rabbitmq

@@ -1,28 +1,32 @@
 # tasks.py
+import os
 from celery import Celery
 from datetime import datetime
-import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+import smtplib
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Celery instance
-celery_app = Celery("tasks", broker="amqp://guest:guest@localhost:5672//")
+celery_app = Celery(
+    "tasks",
+    broker=os.getenv("CELERY_BROKER", "amqp://guest:guest@localhost:5672//")
+)
 
 @celery_app.task
 def send_email():
-    sender_email = "vamshinamala0@gmail.com"          # Your personal Gmail
-    sender_password = "mnhh mudt obsl hdaq"             # Gmail App Password
-    receiver_email = "vamshinamala0@gmail.com"        # Your personal Gmail
+    sender_email = os.getenv("EMAIL_USER")
+    sender_password = os.getenv("EMAIL_PASS")
+    receiver_email = sender_email  # Sending to yourself
 
-    # Email content
     msg = MIMEMultipart()
     msg['From'] = sender_email
     msg['To'] = receiver_email
     msg['Subject'] = "Test Email from Messaging System"
-    body = "Hello Vamshi! This is a test email sent from our Flask + Celery messaging system."
-    msg.attach(MIMEText(body, 'plain'))
+    msg.attach(MIMEText("Hello! This is a test email from Flask + Celery system.", 'plain'))
 
-    # Connect to Gmail SMTP server and send email
     try:
         with smtplib.SMTP("smtp.gmail.com", 587) as server:
             server.starttls()
