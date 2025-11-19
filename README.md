@@ -4,7 +4,7 @@
 This project is a simple messaging system built using Flask, Celery, and RabbitMQ.  
 It demonstrates how asynchronous background processing works in web applications.  
 The system uses Celery workers to handle background tasks such as sending emails,  
-while RabbitMQ acts as the message broker for communication between Flask and Celery.
+while RabbitMQ acts as the message broker for communication between Flask and Celery.....
 
 ---
 
